@@ -1,0 +1,5 @@
+build/CMakeCache.txt
+build/CMakeFiles/
+build/ExampleWithScenario
+build/Makefile
+build/cmake_install.cmake
