@@ -13,7 +13,14 @@ cmake ..
 make
 ```
 
-3. From the `build` folder, run the executable with:
+4. Set the following environment variables:
+
+```
+export IGN_GAZEBO_RESOURCE_PATH=$IGN_GAZEBO_RESOURCE_PATH:/(absolute path to this repo)/anymal
+export IGN_GAZEBO_SYSTEM_PLUGIN_PATH=$IGN_GAZEBO_SYSTEM_PLUGIN_PATH:/(absolute path to scenario libraries)
+```
+
+5. From the `build` folder, run the executable with:
 
 ```
 ./ExampleWithScenario
