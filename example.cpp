@@ -40,6 +40,10 @@ int main(int argc, char* argv[])
     auto robot = world->getModel(/*modelName=*/"anymal");
     auto robotGazebo = std::static_pointer_cast<scenario::gazebo::Model>(robot);
 
+    robot->enableContacts(true);
+    robotGazebo->enableContacts(true);
+    robotGazebo->enableSelfCollisions(true);
+
     // Set the joint control mode
     robot->setJointControlMode(scenario::core::JointControlMode::Position);
     scenario::core::PID pidGains(40., 0., 1.);
@@ -62,14 +66,25 @@ int main(int argc, char* argv[])
     robotGazebo->resetBaseWorldLinearVelocity(velocity);
     robotGazebo->resetBaseWorldAngularVelocity(velocity);
 
+    auto link_ptr = robot->getLink("LF_SHANK");
+
     // Simulate 30 seconds
     for (size_t i = 0; i < 30.0 / gazebo.stepSize(); ++i) {
         gazebo.run();
-    }
+        std::cout << i * gazebo.stepSize() << std::endl;
 
-    // Close the simulator
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    gazebo.close();
+        auto contacts = link_ptr->contacts();
+        for(const auto& contact : contacts) {
+            if((contact.bodyA.find("ground") != std::string::npos) || (contact.bodyB.find("ground") != std::string::npos)){
+                std::cout << "LF_SHANK touched ground!" << std::endl;
+
+                // Close the simulator
+                std::this_thread::sleep_for(std::chrono::seconds(3));
+                gazebo.close();
+                return 0;  
+            }
+        }
+    }
 
     return 0;
 }
